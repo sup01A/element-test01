@@ -16,6 +16,7 @@ const loginAndRegisterFormDataModel = ref({
   rePassword:'',
   rememberMe: false
 })
+const form = ref(null)
 //自定义规则，验证两次输入密码是否一样
 const validatePass = (rule, value, callback) => {
   if (value === '') {
@@ -60,11 +61,21 @@ const loginEvent = async ()=>{
 }
 //注册事件
 import {registerServiceApi} from "@/api/userService.js";
+import {ElMessage} from "element-plus";
 const registerEvent = async ()=>{
   let axiosResponse = await registerServiceApi(loginAndRegisterFormDataModel.value.username,loginAndRegisterFormDataModel.value.password);
   if (axiosResponse.code === 0){
     clearFormData()
   }
+}
+const submitForm = ()=>{
+  form.value.validate((valid) =>{
+    if (valid){
+      registerEvent();
+    }else {
+      ElMessage.error("注册信息有误")
+    }
+  })
 }
 </script>
 
@@ -75,7 +86,7 @@ const registerEvent = async ()=>{
     </el-col>
     <el-col :span="6" :offset="3">
       <!--      注册表-->
-      <el-form v-show="!changeTable" :model="loginAndRegisterFormDataModel" :rules="rule">
+      <el-form ref="form" v-show="!changeTable" :model="loginAndRegisterFormDataModel" :rules="rule">
         <el-form-item><h1>注册</h1></el-form-item>
         <el-form-item prop="username">
           <el-input :prefix-icon="User" placeholder="请输入用户名" v-model="loginAndRegisterFormDataModel.username" clearable></el-input>
@@ -87,7 +98,7 @@ const registerEvent = async ()=>{
           <el-input :prefix-icon="Lock" type="password" placeholder="再次输入密码" v-model="loginAndRegisterFormDataModel.rePassword" clearable></el-input>
         </el-form-item>
         <el-form-item >
-          <el-button type="primary" auto-insert-space @click="registerEvent">注册</el-button>
+          <el-button type="primary" auto-insert-space @click="submitForm">注册</el-button>
         </el-form-item>
         <el-link type="info" :underline="false" @click="clearFormData">
           < 返回
