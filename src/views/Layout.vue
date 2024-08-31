@@ -7,6 +7,11 @@ import {
 } from '@element-plus/icons-vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import avatar from '@/assets/default.png'
+// 用户条目点击事件
+import router from "@/route/index.js";
+const handleCommand = (command)=>{
+
+}
 </script>
 
 <template>
@@ -26,7 +31,7 @@ import avatar from '@/assets/default.png'
           <el-icon><icon-menu /></el-icon>
           <span>文章分类</span>
         </el-menu-item>
-        <el-menu-item index="2">
+        <el-menu-item index="/article/manage">
           <el-icon><setting /></el-icon>
           <span>文章管理</span>
         </el-menu-item>
@@ -35,9 +40,9 @@ import avatar from '@/assets/default.png'
             <el-icon><location /></el-icon>
             <span>个人中心</span>
           </template>
-          <el-menu-item index="3-1">基本资料</el-menu-item>
-          <el-menu-item index="3-2">更换头像</el-menu-item>
-          <el-menu-item index="3-3">重置密码</el-menu-item>
+          <el-menu-item index="/user/info">基本资料</el-menu-item>
+          <el-menu-item index="/user/avatar">更换头像</el-menu-item>
+          <el-menu-item index="/user/resetpassword">重置密码</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-aside>
@@ -48,16 +53,16 @@ import avatar from '@/assets/default.png'
 <!--          右边主内容区头部-->
           <el-header class="header">
             <div>欢迎你：</div>
-            <el-dropdown>
+            <el-dropdown @command="handleCommand">
     <span class="avatar">
       <el-avatar :src="avatar"/>
     </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>基本资料</el-dropdown-item>
-                  <el-dropdown-item>更换头像</el-dropdown-item>
-                  <el-dropdown-item>重置密码</el-dropdown-item>
-                  <el-dropdown-item>退出登录</el-dropdown-item>
+                  <el-dropdown-item command="info">基本资料</el-dropdown-item>
+                  <el-dropdown-item command="avatar">更换头像</el-dropdown-item>
+                  <el-dropdown-item command="resetpassword">重置密码</el-dropdown-item>
+                  <el-dropdown-item command="logout">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
