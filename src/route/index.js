@@ -10,7 +10,10 @@ const routes = [
     },
     {
         path: '/layout',
-        component: ()=> import('@/views/Layout.vue')
+        component: ()=> import('@/views/Layout.vue'),
+        children: [
+            {path: '/article/category',component: ()=> import('@/views/article/ArticleCategory.vue')}
+        ]
     }
 ]
 const router = createRouter({

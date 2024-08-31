@@ -12,15 +12,17 @@ import avatar from '@/assets/default.png'
 <template>
   <div class="common-layout">
   <el-container>
+<!--    左边菜单栏-->
     <el-aside style="background-color: gray; height: 100vh;width: 200px">
       <el-menu
           active-text-color="gold"
           background-color="#545c64"
           class="el-menu-vertical-demo"
           text-color="#fff"
+          router
       >
 
-        <el-menu-item index="1">
+        <el-menu-item index="/article/category">
           <el-icon><icon-menu /></el-icon>
           <span>文章分类</span>
         </el-menu-item>
@@ -39,12 +41,13 @@ import avatar from '@/assets/default.png'
         </el-sub-menu>
       </el-menu>
     </el-aside>
+<!--    右边主内容区-->
     <el-main style="margin: 0;padding: 0">
       <div class="common-layout">
-        <el-container>
+        <el-container style="height: 100vh">
+<!--          右边主内容区头部-->
           <el-header class="header">
             <div>欢迎你：</div>
-
             <el-dropdown>
     <span class="avatar">
       <el-avatar :src="avatar"/>
@@ -59,9 +62,16 @@ import avatar from '@/assets/default.png'
               </template>
             </el-dropdown>
           </el-header>
-          <el-main>Main</el-main>
+<!--          中间区域-->
+          <el-main>
+            <router-view/>
+          </el-main>
+<!--          底部区域-->
+          <el-footer style="background-color: pink">文章系统 ©2024 Created by 欧树波</el-footer>
         </el-container>
+
       </div>
+
     </el-main>
   </el-container>
   </div>
