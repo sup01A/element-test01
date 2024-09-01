@@ -10,6 +10,11 @@ import avatar from '@/assets/default.png'
 // 用户条目点击事件
 import router from "@/route/index.js";
 const handleCommand = (command)=>{
+  if (command === 'logout'){
+    router.push('/')
+  }else {
+    router.push('/user/' + command)
+  }
 
 }
 </script>
