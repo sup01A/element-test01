@@ -23,10 +23,12 @@ const categoryFromData = ref({
 //添加文章分类数据模型规则
 const categoryFromDataRules = ref({
   categoryName:[
-    {required: true, message: '请输入类别名称',trigger: 'blur'}
+    {required: true, message: '请输入类别名称',trigger: 'blur'},
+    {min: 1,max: 10,message: '1-10个字符', trigger: 'blur'},
   ],
   categoryAlias:[
-    {required: true, message: '请输入类别别名',trigger: 'blur'}
+    {required: true, message: '请输入类别别名',trigger: 'blur'},
+    {min: 1,max: 10,message: '1-10个字符', trigger: 'blur'},
   ]
 })
 </script>
@@ -57,13 +59,17 @@ const categoryFromDataRules = ref({
 <!--    添加文章类别弹窗-->
     <el-dialog v-model="eldialog" title="添加类别">
       <el-form :model="categoryFromData" :rules="categoryFromDataRules">
-        <el-form-item prop="categoryName">
+        <el-form-item prop="categoryName" label="名称">
           <el-input placeholder="请输入类别名称" v-model="categoryFromData.categoryName" minlength="1" maxlength="10"></el-input>
         </el-form-item>
-        <el-form-item prop="categoryAlias">
+        <el-form-item prop="categoryAlias" label="别名">
           <el-input placeholder="请输入类别别名" v-model="categoryFromData.categoryAlias" minlength="1" maxlength="10"></el-input>
         </el-form-item>
       </el-form>
+      <template #footer>
+        <el-button type="info" @click="eldialog = false">取消</el-button>
+        <el-button type="primary" >添加</el-button>
+      </template>
     </el-dialog>
   </el-card>
 </template>
