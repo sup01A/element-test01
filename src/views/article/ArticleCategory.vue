@@ -1,4 +1,8 @@
 <script setup>
+import {
+  Edit,
+  Delete
+} from '@element-plus/icons-vue'
 import {ref} from "vue";
 //表单数据模型
 const tableData = ref([])
@@ -31,6 +35,14 @@ const categoryFromDataRules = ref({
     {min: 1,max: 10,message: '1-10个字符', trigger: 'blur'},
   ]
 })
+//添加文章事件
+import {addCategoryServiceApi} from "@/api/categoryService.js";
+const addCategoryEvent = async ()=>{
+  await addCategoryServiceApi(categoryFromData.value)
+  //添加完成后再次获取数据
+  await getCategoryList()
+  eldialog.value = false
+}
 </script>
 
 <template>
@@ -48,9 +60,11 @@ const categoryFromDataRules = ref({
       <el-table-column prop="categoryAlias" label="分类别名" />
       <el-table-column prop="createTime" label="创建时间" />
       <el-table-column prop="updateTime" label="上次更改时间" />
-      <el-table-column  label="操作" width="150">
-        <el-button type="primary" size="small">编辑</el-button>
-        <el-button type="danger" size="small">删除</el-button>
+      <el-table-column  label="操作" width="100">
+        <template #default = {row}>
+          <el-button :icon="Edit" circle type="primary"></el-button>
+          <el-button :icon="Delete" circle type="danger"></el-button>
+        </template>
       </el-table-column>
       <template #empty>
         <el-empty description="没有数据" />
@@ -68,7 +82,7 @@ const categoryFromDataRules = ref({
       </el-form>
       <template #footer>
         <el-button type="info" @click="eldialog = false">取消</el-button>
-        <el-button type="primary" >添加</el-button>
+        <el-button type="primary" @click="addCategoryEvent">添加</el-button>
       </template>
     </el-dialog>
   </el-card>
