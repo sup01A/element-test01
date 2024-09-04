@@ -11,19 +11,29 @@ const getCategoryList = async ()=>{
   let axiosResponse = await categoryListServiceApi();
   tableData.value = axiosResponse.data
 }
+//定义变量，控制标题的展示
+const title = ref('')
 //获取分类
 getCategoryList()
 //添加类别弹窗
 const eldialog = ref(false)
 //添加类别按钮
 const addButton = ()=>{
+  title.value = '添加分类'
   eldialog.value = true
 }
 //添加文章分类数据模型
 const categoryFromData = ref({
+  id: null,
   categoryName: '',
   categoryAlias: ''
 })
+//清空数据模型方法
+const clearCategoryFromData = ()=>{
+  categoryFromData.value.id = null
+  categoryFromData.value.categoryName = ''
+  categoryFromData.value.categoryAlias = ''
+}
 //添加文章分类数据模型规则
 const categoryFromDataRules = ref({
   categoryName:[
@@ -41,8 +51,20 @@ const addCategoryEvent = async ()=>{
   await addCategoryServiceApi(categoryFromData.value)
   //添加完成后再次获取数据
   await getCategoryList()
+  //添加完成清空数据
+  clearCategoryFromData()
   eldialog.value = false
 }
+//展示编辑框
+const showDialog = (row)=>{
+  eldialog.value = true
+  title.value = '编辑分类'
+  categoryFromData.value.id = row.id
+  categoryFromData.value.categoryName = row.categoryName
+  categoryFromData.value.categoryAlias = row.categoryAlias
+}
+//类别信息编辑事件
+
 </script>
 
 <template>
@@ -62,7 +84,7 @@ const addCategoryEvent = async ()=>{
       <el-table-column prop="updateTime" label="上次更改时间" />
       <el-table-column  label="操作" width="100">
         <template #default = {row}>
-          <el-button :icon="Edit" circle type="primary"></el-button>
+          <el-button :icon="Edit" circle type="primary" @click="showDialog(row)"></el-button>
           <el-button :icon="Delete" circle type="danger"></el-button>
         </template>
       </el-table-column>
@@ -71,7 +93,7 @@ const addCategoryEvent = async ()=>{
       </template>
     </el-table>
 <!--    添加文章类别弹窗-->
-    <el-dialog v-model="eldialog" title="添加类别">
+    <el-dialog v-model="eldialog" :title="title">
       <el-form :model="categoryFromData" :rules="categoryFromDataRules">
         <el-form-item prop="categoryName" label="名称">
           <el-input placeholder="请输入类别名称" v-model="categoryFromData.categoryName" minlength="1" maxlength="10"></el-input>
