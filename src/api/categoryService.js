@@ -5,3 +5,6 @@ export const categoryListServiceApi = ()=>{
 export const addCategoryServiceApi = (data)=>{
     return instance.post('/category',data)
 }
+export const updateCategoryServiceApi = (data)=>{
+    return instance.put('/category',data)
+}

@@ -64,7 +64,15 @@ const showDialog = (row)=>{
   categoryFromData.value.categoryAlias = row.categoryAlias
 }
 //类别信息编辑事件
-
+import {updateCategoryServiceApi} from "@/api/categoryService.js";
+const updateCategoryEvent = async ()=>{
+  await updateCategoryServiceApi(categoryFromData.value);
+  //添加完成后再次获取数据
+  await getCategoryList()
+  //添加完成清空数据
+  clearCategoryFromData()
+  eldialog.value = false
+}
 </script>
 
 <template>
@@ -104,7 +112,7 @@ const showDialog = (row)=>{
       </el-form>
       <template #footer>
         <el-button type="info" @click="eldialog = false">取消</el-button>
-        <el-button type="primary" @click="addCategoryEvent">添加</el-button>
+        <el-button type="primary" @click="title === '添加分类' ? addCategoryEvent() : updateCategoryEvent() ">确认</el-button>
       </template>
     </el-dialog>
   </el-card>
