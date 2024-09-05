@@ -1,18 +1,25 @@
 <script setup>
 import {ref} from "vue";
+//调用获得用户的文章类别方法
+import {categoryListServiceApi} from "@/api/categoryService.js";
+import {Delete, Edit} from "@element-plus/icons-vue";
+//后段获取文章数据
+import {getArticleListBySearchCondition} from "@/api/articleService.js";
 //文章搜索条件数据模型
 const searchArticleDataModel = ref({
+  pageNum: 1,
+  pageSize: 5,
   categoryId: null,
   state:null
 })
 //后端获得的类比信息列表
-const articleCategoryData = ref()
-//调用获得用户的文章类别方法
-import {categoryListServiceApi} from "@/api/categoryService.js";
-import {Delete, Edit} from "@element-plus/icons-vue";
+const articleCategoryData = ref([])
+//后端获取文章总条数
+const total = ref()
 const getArticleCategoryData = async ()=>{
   let axiosResponse = await categoryListServiceApi();
-  articleCategoryData.value = axiosResponse.data
+  articleCategoryData.value = axiosResponse.data.item
+  total.value = axiosResponse.data.total
 }
 getArticleCategoryData()
 //重置文章搜索条件数据模型按钮
@@ -21,9 +28,17 @@ const resetSearchArticleDataModel = ()=>{
   searchArticleDataModel.value.state = null
 }
 //展示区表格数据模型
-const tableData = ref([])
+const tableData = ref(null)
+const getTableData = async ()=>{
+  let axiosResponse = await getArticleListBySearchCondition(searchArticleDataModel.value);
+  tableData.value = axiosResponse.data
+}
+getTableData()
+//分页条变化事件
+const handlePaginationChange = ()=>{
+  getTableData()
+}
 </script>
-
 <template>
   <el-card style="width: 100%;min-height: 100vh">
 <!--    头部-->
@@ -68,7 +83,7 @@ const tableData = ref([])
       </el-form-item>
     </el-form>
 <!--    展示数据的表格-->
-    <el-table  :data="tableData" style="width: 100%" :header-cell-style="{ color: '#0f0e0e' }">
+    <el-table  :data="tableData.value.data" style="width: 100%" :header-cell-style="{ color: '#0f0e0e' }">
       <el-table-column prop="id" label="文章标题" />
       <el-table-column prop="categoryName" label="分类" />
       <el-table-column prop="categoryAlias" label="发表时间" />
@@ -83,6 +98,16 @@ const tableData = ref([])
         <el-empty description="没有数据" />
       </template>
     </el-table>
+<!--    分页导航条-->
+    <el-pagination
+        v-model:current-page="searchArticleDataModel.pageNum"
+        v-model:page-size="searchArticleDataModel.pageSize"
+        :page-sizes="[5, 10, 15, 20]"
+        :background="true"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="tableData.value.total"
+        @change="handlePaginationChange"
+    />
   </el-card>
 
 </template>
