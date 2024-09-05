@@ -12,14 +12,12 @@ const searchArticleDataModel = ref({
   categoryId: null,
   state:null
 })
-//后端获得的类比信息列表
+//后端获得的类别信息列表
 const articleCategoryData = ref([])
-//后端获取文章总条数
-const total = ref()
+
 const getArticleCategoryData = async ()=>{
   let axiosResponse = await categoryListServiceApi();
-  articleCategoryData.value = axiosResponse.data.item
-  total.value = axiosResponse.data.total
+  articleCategoryData.value = axiosResponse.data
 }
 getArticleCategoryData()
 //重置文章搜索条件数据模型按钮
@@ -28,10 +26,13 @@ const resetSearchArticleDataModel = ()=>{
   searchArticleDataModel.value.state = null
 }
 //展示区表格数据模型
-const tableData = ref(null)
+//后端获取文章总条数
+const total = ref()
+const tableData = ref([])
 const getTableData = async ()=>{
   let axiosResponse = await getArticleListBySearchCondition(searchArticleDataModel.value);
-  tableData.value = axiosResponse.data
+  tableData.value = axiosResponse.data.items
+  total.value = axiosResponse.data.total
 }
 getTableData()
 //分页条变化事件
@@ -83,11 +84,11 @@ const handlePaginationChange = ()=>{
       </el-form-item>
     </el-form>
 <!--    展示数据的表格-->
-    <el-table  :data="tableData.value.data" style="width: 100%" :header-cell-style="{ color: '#0f0e0e' }">
-      <el-table-column prop="id" label="文章标题" />
-      <el-table-column prop="categoryName" label="分类" />
-      <el-table-column prop="categoryAlias" label="发表时间" />
-      <el-table-column prop="createTime" label="状态" />
+    <el-table  :data="tableData" style="width: 100%" :header-cell-style="{ color: '#0f0e0e' }">
+      <el-table-column prop="title" label="文章标题" />
+      <el-table-column prop="categoryId" label="分类" />
+      <el-table-column prop="createTime" label="发表时间" />
+      <el-table-column prop="state" label="状态" />
       <el-table-column  label="操作" width="100">
         <template #default = {row}>
           <el-button :icon="Edit" circle type="primary" ></el-button>
@@ -105,8 +106,11 @@ const handlePaginationChange = ()=>{
         :page-sizes="[5, 10, 15, 20]"
         :background="true"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.value.total"
-        @change="handlePaginationChange"
+        :total="total"
+        @size-change="handlePaginationChange"
+        @current-change="handlePaginationChange"
+        style="justify-content: flex-end;margin-top: 20px"
+
     />
   </el-card>
 
