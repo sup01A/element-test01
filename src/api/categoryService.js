@@ -8,3 +8,6 @@ export const addCategoryServiceApi = (data)=>{
 export const updateCategoryServiceApi = (data)=>{
     return instance.put('/category',data)
 }
+export const deleteCategoryServiceApi = (id)=>{
+    return instance.delete('/category',{params: {id:id}})
+}

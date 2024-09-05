@@ -73,6 +73,28 @@ const updateCategoryEvent = async ()=>{
   clearCategoryFromData()
   eldialog.value = false
 }
+//删除类别确认框
+import {ElMessage, ElMessageBox} from "element-plus";
+import {deleteCategoryServiceApi} from "@/api/categoryService.js";
+const confirmDel = (id)=>{
+  ElMessageBox.confirm(
+      '确定删除该类别吗?',
+      '警告',
+      {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type:'warning',
+        draggable: true,
+        confirmButtonClass: 'configButton'
+      }
+  ).then(async ()=>{
+    await deleteCategoryServiceApi(id)
+    //删除成功再次重新获取列表
+    await getCategoryList()
+  }).catch(()=>{
+    ElMessage.info('取消')
+  })
+}
 </script>
 
 <template>
@@ -93,7 +115,7 @@ const updateCategoryEvent = async ()=>{
       <el-table-column  label="操作" width="100">
         <template #default = {row}>
           <el-button :icon="Edit" circle type="primary" @click="showDialog(row)"></el-button>
-          <el-button :icon="Delete" circle type="danger"></el-button>
+          <el-button :icon="Delete" circle type="danger" @click="confirmDel(row.id)"></el-button>
         </template>
       </el-table-column>
       <template #empty>
@@ -101,7 +123,7 @@ const updateCategoryEvent = async ()=>{
       </template>
     </el-table>
 <!--    添加文章类别弹窗-->
-    <el-dialog v-model="eldialog" :title="title">
+    <el-dialog v-model="eldialog" :title="title" draggable>
       <el-form :model="categoryFromData" :rules="categoryFromDataRules">
         <el-form-item prop="categoryName" label="名称">
           <el-input placeholder="请输入类别名称" v-model="categoryFromData.categoryName" minlength="1" maxlength="10"></el-input>
@@ -118,5 +140,13 @@ const updateCategoryEvent = async ()=>{
   </el-card>
 </template>
 
-<style scoped>
+<style>
+.configButton {
+  background: #751d1d;
+  color: #fff;
+}
+.configButton:hover{
+  background: red;
+  color: #fff;
+}
 </style>
